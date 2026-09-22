@@ -11,7 +11,7 @@ requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Tygart Media" }]
 dependencies = [
-  "playwright>=1.40",
+  "playwright==1.63.0",
 ]
 keywords = ["aeo", "geo", "accessibility", "agent", "mcp", "playwright"]
 classifiers = [

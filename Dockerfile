@@ -1,5 +1,5 @@
-# Official Playwright Python image — browsers preinstalled
-FROM mcr.microsoft.com/playwright/python:v1.49.1-jammy
+# Keep image tag in sync with playwright package pin below / in pyproject
+FROM mcr.microsoft.com/playwright/python:v1.63.0-jammy
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -14,8 +14,10 @@ COPY pyproject.toml README.md LICENSE ./
 COPY src ./src
 COPY host ./host
 
+# Pin playwright to the image browser revision
 RUN pip install -U pip \
- && pip install -e ".[host]"
+ && pip install -e ".[host]" \
+ && pip install "playwright==1.63.0"
 
 EXPOSE 8080
 CMD ["uvicorn", "host.app:app", "--host", "0.0.0.0", "--port", "8080"]
