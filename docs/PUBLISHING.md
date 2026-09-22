@@ -47,13 +47,11 @@ Repo side already matches: `.github/workflows/publish.yml` + GitHub Environment 
 
 ### First release (D16)
 
-**HOLD:** First Actions → Publish is a real upload (creates the project + ships v0.1.0a0). Hard to un-publish.
+**PARKED PERMANENTLY (Will 2026-09-22 ~3:15 PM PDT).**  
+No PyPI account. Do not enable `publish.yml`, do not run Publish, do not ask for credentials.  
+Failed run `35790727117` stays as-is — no retries.
 
-Requires **Will typed YES** in chat before Cursor runs the workflow.
-
-Then: Actions → **Publish to PyPI** → type `publish` in the confirm box → Run.
-
-Until published:
+Install from Git:
 
 ```bash
 pip install "git+https://github.com/TygartMedia/page-ready.git"
