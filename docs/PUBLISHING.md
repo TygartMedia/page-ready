@@ -1,4 +1,12 @@
-# PyPI + MCP
+# Install and MCP
+
+PageReady is installed from this Git repository. It is not a PyPI release channel. Do not publish this package, and do not enable or run `.github/workflows/publish.yml`.
+
+```bash
+pip install "git+https://github.com/TygartMedia/page-ready.git"
+```
+
+For a checkout, use the quickstart in `README.md` (`pip install -e .`).
 
 ## Local MCP (Cursor)
 
@@ -19,40 +27,3 @@
 Or after install: `"command": "page-ready-mcp"`.
 
 Tools: `score_page`, `score_site`, `explain_gates`.
-
-## PyPI Trusted Publisher (pending — project not registered yet)
-
-Package name in `pyproject.toml`: **page-ready**.
-
-Warehouse check (expect 404 until first publish):
-
-- `https://pypi.org/pypi/page-ready/json`
-- `https://pypi.org/simple/page-ready/`
-
-### One-time setup (Will)
-
-Project page does **not** exist yet. Register a **pending** publisher at account level; PyPI creates the project on first successful publish.
-
-1. Sign in to https://pypi.org (correct account).  
-2. Open **[Account publishing settings](https://pypi.org/manage/account/publishing/)**.  
-3. Add a **new pending publisher** with exact values:
-   - **PyPI Project Name:** `page-ready`
-   - **Owner:** `TygartMedia`
-   - **Repository name:** `page-ready`
-   - **Workflow name:** `publish.yml`
-   - **Environment name:** `release`
-4. Save.
-
-Repo side already matches: `.github/workflows/publish.yml` + GitHub Environment `release`.
-
-### First release (D16)
-
-**PARKED PERMANENTLY (Will 2026-09-22 ~3:15 PM PDT).**  
-No PyPI account. Do not enable `publish.yml`, do not run Publish, do not ask for credentials.  
-Failed run `35790727117` stays as-is — no retries.
-
-Install from Git:
-
-```bash
-pip install "git+https://github.com/TygartMedia/page-ready.git"
-```
