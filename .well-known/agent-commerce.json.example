@@ -1,0 +1,23 @@
+{
+  "name": "PageReady",
+  "description": "Cite-ready (AEO) + click-ready (DOM) page scoring for AI agents and developers.",
+  "version": "0.1.0a0",
+  "provider": "Tygart Media",
+  "homepage": "https://tygartmedia.com/page-ready/",
+  "source": "https://github.com/TygartMedia/page-ready",
+  "skills": ["aeo_score", "dom_agent_score", "page_ready_scorecard"],
+  "pricing": {
+    "currency": "USD",
+    "free": ["cli", "local_mcp"],
+    "pay_per_url_x402_usd": 0.25,
+    "site_pack_25_usd": 4.99,
+    "site_pack_100_usd": 9.99,
+    "max_useful_spend_usd": 9.99,
+    "card_minimum_usd": 4.99
+  },
+  "budget_hint": "Fits inside a 10-20 USD agent task wallet; prefer x402 for sub-dollar calls.",
+  "endpoints": {
+    "score": "https://api.example.com/v1/score",
+    "note": "EXAMPLE ONLY — not live. Do not publish until Phase 4 YES."
+  }
+}
