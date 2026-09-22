@@ -18,18 +18,28 @@
 
 Or after install: `"command": "page-ready-mcp"`.
 
-Tools: `score_page`, `score_site` (≤10 URLs), `explain_gates`.
+Tools: `score_page`, `score_site`, `explain_gates`.
 
-## PyPI
+## PyPI Trusted Publisher
 
-Package name: **page-ready**.
+Package name in `pyproject.toml`: **page-ready** (must match PyPI).
 
-1. Create https://pypi.org account (Tygart Media) if needed.
-2. Add Trusted Publisher: GitHub `TygartMedia/page-ready`, workflow `publish-pypi.yml`, environment `pypi`.
-3. Create GitHub Environment `pypi` (optional reviewers).
-4. Actions → **Publish to PyPI** → type `publish`.
+### One-time setup (Will / Glint)
 
-Until then, install from Git:
+1. PyPI account for Tygart Media if needed: https://pypi.org  
+2. Create project **page-ready** (or first publish will).  
+3. **Publishing** → Add Trusted Publisher:
+   - Owner: `TygartMedia`
+   - Repository: `page-ready`
+   - Workflow: `publish.yml`
+   - Environment: `release`
+4. GitHub repo → Settings → Environments → create **`release`** (optional protection rules).
+
+### Release
+
+Actions → **Publish to PyPI** → type `publish` in the confirm box → Run.
+
+Until published:
 
 ```bash
 pip install "git+https://github.com/TygartMedia/page-ready.git"
