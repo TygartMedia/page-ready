@@ -7,6 +7,8 @@ PageReady scores a public page, or a short list of pages, for two kinds of readi
 
 **Overall PASS** only when both sides clear. Fixing headings can lift the shared heading gate. It does not fix clickable `<div>` cards.
 
+A submit, button, or reset `<input>` is named by its `value`. That is the visible label. A comment form’s Post Comment control (`<input type="submit" id="submit" value="Post Comment">`, no `aria-label`) was flagged unnamed on a live article until the gate honored `value`. An empty `value` is still unnamed. So is an icon button with no text and no label. A text field’s `value` is what someone typed, not its name.
+
 PageReady is a local command-line tool, a stdio MCP server, and an optional HTTP API you can run yourself (including on Cloud Run).
 
 ## MCP tools

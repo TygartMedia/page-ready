@@ -64,6 +64,13 @@ PROBE_JS = r"""
       }
       const wrap = el.closest('label');
       if (wrap) return (wrap.innerText || wrap.textContent || '').trim();
+      // A submit/button/reset input's visible label is its value attribute.
+      // Text-like inputs do not use value; that is the user's data, not the name.
+      const inputType = (el.getAttribute('type') || '').toLowerCase();
+      if (el.tagName === 'INPUT' && (inputType === 'submit' || inputType === 'button' || inputType === 'reset')) {
+        const value = (el.getAttribute('value') || '').trim();
+        if (value) return value;
+      }
       const title = (el.getAttribute('title') || '').trim();
       if (title) return title;
       const ph = (el.getAttribute('placeholder') || '').trim();
