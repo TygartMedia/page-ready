@@ -20,28 +20,38 @@ Or after install: `"command": "page-ready-mcp"`.
 
 Tools: `score_page`, `score_site`, `explain_gates`.
 
-## PyPI Trusted Publisher
+## PyPI Trusted Publisher (pending — project not registered yet)
 
-Package name in `pyproject.toml`: **page-ready** (must match PyPI).
+Package name in `pyproject.toml`: **page-ready**.
 
-### One-time setup (Will / Glint)
+Warehouse check (expect 404 until first publish):
 
-1. PyPI account for Tygart Media if needed: https://pypi.org  
-2. Create project **page-ready** (or first publish will).  
-3. **Publishing** → Add Trusted Publisher:
-   - Owner: `TygartMedia`
-   - Repository: `page-ready`
-   - Workflow: `publish.yml`
-   - Environment: `release`
-4. GitHub repo → Settings → Environments → create **`release`** (optional protection rules).
+- `https://pypi.org/pypi/page-ready/json`
+- `https://pypi.org/simple/page-ready/`
 
-### Release
+### One-time setup (Will)
 
-**HOLD:** First Actions → Publish run is a real PyPI upload (hard to un-publish).  
-Requires **Will typed YES** in chat before Cursor runs the workflow — not a casual tap.
+Project page does **not** exist yet. Register a **pending** publisher at account level; PyPI creates the project on first successful publish.
 
-Actions → **Publish to PyPI** → type `publish` in the confirm box → Run.  
-(Only after Will YES + Trusted Publisher saved on PyPI.)
+1. Sign in to https://pypi.org (correct account).  
+2. Open **[Account publishing settings](https://pypi.org/manage/account/publishing/)**.  
+3. Add a **new pending publisher** with exact values:
+   - **PyPI Project Name:** `page-ready`
+   - **Owner:** `TygartMedia`
+   - **Repository name:** `page-ready`
+   - **Workflow name:** `publish.yml`
+   - **Environment name:** `release`
+4. Save.
+
+Repo side already matches: `.github/workflows/publish.yml` + GitHub Environment `release`.
+
+### First release (D16)
+
+**HOLD:** First Actions → Publish is a real upload (creates the project + ships v0.1.0a0). Hard to un-publish.
+
+Requires **Will typed YES** in chat before Cursor runs the workflow.
+
+Then: Actions → **Publish to PyPI** → type `publish` in the confirm box → Run.
 
 Until published:
 
