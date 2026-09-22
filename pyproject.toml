@@ -7,7 +7,7 @@ name = "page-ready"
 version = "0.1.0a0"
 description = "Cite-ready (AEO) + click-ready (DOM) binary page scoring for developers and AI agents."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Tygart Media" }]
 dependencies = [
