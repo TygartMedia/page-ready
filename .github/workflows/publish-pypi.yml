@@ -1,0 +1,36 @@
+name: Publish to PyPI
+
+# Requires one-time PyPI Trusted Publisher setup:
+#   https://pypi.org/manage/account/publishing/
+#   Owner: TygartMedia  Repo: page-ready  Workflow: publish-pypi.yml  Env: pypi
+#
+# Does NOT run on push — manual only until first release is intentional.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type publish to release to PyPI'
+        required: true
+        default: ''
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    if: github.event.inputs.confirm == 'publish'
+    runs-on: ubuntu-latest
+    environment: pypi
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Build
+        run: |
+          python -m pip install -U pip build
+          python -m build
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1

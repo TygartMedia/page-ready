@@ -20,10 +20,28 @@ playwright install chromium
 
 ```bash
 page-ready fixtures/01-before-aeo.html
-python -m page_ready.score https://example.com/
+python -m page_ready https://example.com/
 ```
 
-Requires Python 3.11+ and Playwright Chromium.
+### MCP
+
+```bash
+page-ready-mcp
+# or: python -m page_ready.mcp_server
+```
+
+See `docs/PUBLISHING.md` for Cursor MCP config + PyPI trusted publishing.
+
+### Hosted API (Cloud Run, uncharged)
+
+```bash
+pip install -e ".[host]"
+uvicorn host.app:app --reload
+# GET /v1/score?url=https://example.com/
+```
+
+Deploy: `bash scripts/deploy-cloudrun.sh` (project `plucky-agent-313422`).  
+`PAGE_READY_ACCEPT_PAID=0` — no x402/Stripe charging until product decision D10/D11.
 
 ## Scorecard shape
 
@@ -48,10 +66,10 @@ Requires Python 3.11+ and Playwright Chromium.
 ## Roadmap (public)
 
 - [x] Unified CLI scorecard (alpha)
-- [ ] PyPI `page-ready` release
-- [ ] Local MCP server (`score_page`, `score_site`)
-- [ ] Hosted API on Cloud Run (rate-limited; payments later)
-- [ ] Agent pay: x402 per-URL · Stripe site packs ($4.99 / $9.99)
+- [x] Local MCP server (`score_page`, `score_site`, `explain_gates`)
+- [x] Hosted API scaffold + SSRF guards (Cloud Run)
+- [ ] PyPI `page-ready` release (Trusted Publisher workflow ready)
+- [ ] Agent pay: x402 per-URL · Stripe site packs ($4.99 / $9.99) — HOLD until enabled
 
 Agent-oriented pricing target: stay inside a **$10–20 task budget** (packs ≤ $9.99). Micropayments via x402; card checkout only at pack floor (Stripe fees).
 

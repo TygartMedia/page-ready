@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "page-ready"
 version = "0.1.0a0"
-description = "Cite-ready (AEO) + click-ready (DOM) binary page scoring for humans and agents."
+description = "Cite-ready (AEO) + click-ready (DOM) binary page scoring for developers and AI agents."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -20,8 +20,24 @@ classifiers = [
   "Programming Language :: Python :: 3",
 ]
 
+[project.optional-dependencies]
+host = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+]
+dev = [
+  "pytest>=8.0",
+  "page-ready[host]",
+]
+
 [project.scripts]
 page-ready = "page_ready.cli:main"
+page-ready-mcp = "page_ready.mcp_server:main"
+
+[project.urls]
+Homepage = "https://github.com/TygartMedia/page-ready"
+Repository = "https://github.com/TygartMedia/page-ready"
+Issues = "https://github.com/TygartMedia/page-ready/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

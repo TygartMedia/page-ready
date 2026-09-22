@@ -16,17 +16,19 @@ jobs:
       - name: Install
         run: |
           python -m pip install -U pip
-          pip install -e .
+          pip install -e ".[dev]"
           playwright install --with-deps chromium
+      - name: Unit tests
+        run: pytest -q
       - name: Fixture before (expect fail)
         run: |
           set +e
-          python -m page_ready.score fixtures/01-before-aeo.html
+          python -m page_ready fixtures/01-before-aeo.html
           test $? -eq 1
       - name: Fixture after AEO (expect pass)
-        run: python -m page_ready.score fixtures/02-after-aeo-only.html
+        run: python -m page_ready fixtures/02-after-aeo-only.html
       - name: Fixture agent-broken (expect fail)
         run: |
           set +e
-          python -m page_ready.score fixtures/03-after-aeo-still-agent-broken.html
+          python -m page_ready fixtures/03-after-aeo-still-agent-broken.html
           test $? -eq 1
