@@ -46,8 +46,9 @@ def _rate_limit(ip: str) -> None:
         q.append(now)
 
 
-@app.get("/healthz")
-def healthz() -> dict:
+@app.get("/readyz")
+@app.get("/v1/status")
+def status() -> dict:
     return {"ok": True, "product": "page-ready", "accept_paid": ACCEPT_PAID}
 
 
