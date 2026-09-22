@@ -1,82 +1,134 @@
 # PageReady
 
-**Cite-ready + click-ready page scoring** for developers and AI agents.
+PageReady scores a public page, or a short list of pages, for two kinds of readiness:
 
-PageReady runs two binary scorecards on a URL (or local HTML):
+1. **Citation readiness (AEO)** — one H1, heading hierarchy, JSON-LD, a table signal, and FAQ-style questions.
+2. **Agent interaction readiness (DOM)** — a main landmark, named controls, semantic interactive elements, heading order, and form labels.
 
-1. **AEO (citation readiness)** — H1 integrity, heading hierarchy, JSON-LD schema, table + FAQ signals  
-2. **DOM (agent interaction readiness)** — landmarks, named controls, semantic interactive elements, heading outline, form labels  
+**Overall PASS** only when both sides clear. Fixing headings can lift the shared heading gate. It does not fix clickable `<div>` cards.
 
-**Overall PASS** only when both sides clear.
+PageReady is a local command-line tool, a stdio MCP server, and an optional HTTP API you can run yourself (including on Cloud Run).
 
-> Measured internally: AEO-only optimization often lifts the shared heading gate, but **does not** fix agent-broken patterns (e.g. clickable `<div>` cards). Score both.
+## MCP tools
 
-## Install (dev / local)
+| Tool | What it does |
+|---|---|
+| `score_page` | Score one public `http(s)` URL. Returns a JSON scorecard. |
+| `score_site` | Score up to 10 URLs and return per-URL scorecards plus pass/fail counts. |
+| `explain_gates` | Describe the AEO checks, the five DOM gates, and the overall PASS rule. |
+
+## Quickstart
+
+Requires Python 3.10+.
 
 ```bash
+git clone https://github.com/TygartMedia/page-ready.git
+cd page-ready
+python -m venv .venv
+```
+
+Windows (PowerShell):
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python -m pip install -U pip
 pip install -e .
 playwright install chromium
+page-ready fixtures/02-after-aeo-only.html
 ```
+
+macOS / Linux:
+
+```bash
+source .venv/bin/activate
+python -m pip install -U pip
+pip install -e .
+playwright install chromium
+page-ready fixtures/02-after-aeo-only.html
+```
+
+Exit code `0` means overall PASS. Exit code `1` means overall FAIL.
 
 ```bash
 page-ready fixtures/01-before-aeo.html
-python -m page_ready https://example.com/
+page-ready fixtures/03-after-aeo-still-agent-broken.html
+page-ready https://example.com/
 ```
 
 ### MCP
 
+After the install above:
+
 ```bash
 page-ready-mcp
-# or: python -m page_ready.mcp_server
 ```
 
-See `docs/PUBLISHING.md` for Cursor MCP config + PyPI trusted publishing.
+Cursor MCP config (stdio):
 
-### Hosted API (Cloud Run, uncharged)
+```json
+{
+  "mcpServers": {
+    "page-ready": {
+      "command": "page-ready-mcp"
+    }
+  }
+}
+```
+
+From a checkout without installing scripts, use `python -m page_ready.mcp_server` and set `PYTHONPATH` to `src`.
+
+## Configuration
+
+No API keys are required to score pages. Nothing secret belongs in this repository. `.env` files are gitignored.
+
+| Variable | Default | Used by |
+|---|---|---|
+| `PAGE_READY_ACCEPT_PAID` | `0` | Host API. `1` is not a payment integration; the API returns 501. |
+| `PAGE_READY_RATE_PER_MIN` | `10` | Host API, requests per client IP per minute. |
+| `GCP_PROJECT` | unset (required to deploy) | `scripts/deploy-cloudrun.sh` and `scripts/deploy-cloudrun.ps1` only. |
+| `REGION` | `us-central1` | Deploy scripts. |
+| `SERVICE` | `page-ready-api` | Deploy scripts. |
+
+Set `GCP_PROJECT` in your shell when you deploy. Do not commit a project id, a Cloud Run URL, or a service-account file.
+
+### Host API
 
 ```bash
 pip install -e ".[host]"
 uvicorn host.app:app --reload
-# GET /v1/score?url=https://example.com/
 ```
 
-Deploy: `bash scripts/deploy-cloudrun.sh` (project `plucky-agent-313422`).  
-`PAGE_READY_ACCEPT_PAID=0` — no x402/Stripe charging until product decision D10/D11.
+`GET /v1/score?url=https://example.com/`  
+`GET /readyz` and `GET /v1/status`
 
-## Scorecard shape
+Deploy (your own Google Cloud project):
 
-```json
-{
-  "product": "page-ready",
-  "overall": "FAIL",
-  "aeo": { "status": "PASS", "passed_checks": 5, "total_checks": 5 },
-  "dom": { "overall": "FAIL", "gates_passed": 4, "gates_total": 5 },
-  "fix_hints": ["Replace clickable div/span with <a>/<button> or add role + name."]
-}
+```bash
+# bash
+export GCP_PROJECT="your-project-id"
+bash scripts/deploy-cloudrun.sh
 ```
+
+```powershell
+# PowerShell
+$env:GCP_PROJECT = "your-project-id"
+.\scripts\deploy-cloudrun.ps1
+```
+
+The script prints the service URL from Cloud Run. That URL is not stored in this repo.
 
 ## Fixtures
 
 | Fixture | Expected |
 |---|---|
-| `fixtures/01-before-aeo.html` | AEO FAIL · DOM FAIL (headings) |
-| `fixtures/02-after-aeo-only.html` | AEO PASS · DOM PASS |
-| `fixtures/03-after-aeo-still-agent-broken.html` | AEO PASS · DOM FAIL (semantic) |
+| `fixtures/01-before-aeo.html` | AEO FAIL, DOM FAIL (headings) |
+| `fixtures/02-after-aeo-only.html` | AEO PASS, DOM PASS |
+| `fixtures/03-after-aeo-still-agent-broken.html` | AEO PASS, DOM FAIL (semantic) |
 
-## Roadmap (public)
+## As-is
 
-- [x] Unified CLI scorecard (alpha)
-- [x] Local MCP server (`score_page`, `score_site`, `explain_gates`)
-- [x] Hosted API scaffold + SSRF guards (Cloud Run)
-- [ ] PyPI `page-ready` release (Trusted Publisher workflow ready)
-- [ ] Agent pay: x402 per-URL · Stripe site packs ($4.99 / $9.99) — HOLD until enabled
-
-Agent-oriented pricing target: stay inside a **$10–20 task budget** (packs ≤ $9.99). Micropayments via x402; card checkout only at pack floor (Stripe fees).
+Community use is welcome. PageReady is provided **as-is**, with no service level, no uptime commitment, and no support promise. GitHub issues are read on a best-effort basis. See `LICENSE` and `SECURITY.md`.
 
 ## License
 
-MIT © Tygart Media
-
-## Security
-
-Do not point a hosted scorer at private IPs. SSRF controls are mandatory before any public API. See `SECURITY.md`.
+MIT © 2026 Tygart Media

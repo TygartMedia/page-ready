@@ -1,8 +1,9 @@
-# Deploy uncharged PageReady API to Cloud Run (plucky-agent).
-# Payments stay off (PAGE_READY_ACCEPT_PAID=0).
+# Deploy the PageReady API to Cloud Run.
+# Requires GCP_PROJECT. Payments stay off (PAGE_READY_ACCEPT_PAID=0).
 $ErrorActionPreference = "Continue"
 
-$Project = if ($env:GCP_PROJECT) { $env:GCP_PROJECT } else { "plucky-agent-313422" }
+if (-not $env:GCP_PROJECT) { throw "Set GCP_PROJECT to your Google Cloud project id" }
+$Project = $env:GCP_PROJECT
 $Region = if ($env:REGION) { $env:REGION } else { "us-central1" }
 $Service = if ($env:SERVICE) { $env:SERVICE } else { "page-ready-api" }
 $sha = (git rev-parse --short HEAD).Trim()

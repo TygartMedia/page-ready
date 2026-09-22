@@ -12,6 +12,11 @@ from page_ready.score import main_print, score_fixture, score_page_url
 
 
 def main(argv: list[str] | None = None) -> int:
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     ap = argparse.ArgumentParser(
         prog="page-ready",
         description="Cite-ready (AEO) + click-ready (DOM) page scoring",

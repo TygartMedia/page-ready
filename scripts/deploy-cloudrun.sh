@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Deploy uncharged PageReady API to Cloud Run (plucky-agent).
-# Payments stay off (PAGE_READY_ACCEPT_PAID=0).
+# Deploy the PageReady API to Cloud Run.
+# Requires GCP_PROJECT. Payments stay off (PAGE_READY_ACCEPT_PAID=0).
 set -euo pipefail
 
-PROJECT="${GCP_PROJECT:-plucky-agent-313422}"
+: "${GCP_PROJECT:?Set GCP_PROJECT to your Google Cloud project id}"
+PROJECT="$GCP_PROJECT"
 REGION="${REGION:-us-central1}"
 SERVICE="${SERVICE:-page-ready-api}"
 IMAGE="gcr.io/${PROJECT}/${SERVICE}:$(git rev-parse --short HEAD)"
