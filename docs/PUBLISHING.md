@@ -37,7 +37,11 @@ Package name in `pyproject.toml`: **page-ready** (must match PyPI).
 
 ### Release
 
-Actions → **Publish to PyPI** → type `publish` in the confirm box → Run.
+**HOLD:** First Actions → Publish run is a real PyPI upload (hard to un-publish).  
+Requires **Will typed YES** in chat before Cursor runs the workflow — not a casual tap.
+
+Actions → **Publish to PyPI** → type `publish` in the confirm box → Run.  
+(Only after Will YES + Trusted Publisher saved on PyPI.)
 
 Until published:
 
