@@ -15,10 +15,14 @@ from page_ready._dom_legacy import score_html, score_url
 
 _UA = "PageReady/0.1 (+https://tygartmedia.com)"
 _FETCH_RETRIES = 3
+# Ask caches/CDNs for a fresh copy: a live score must reflect the page as it is
+# now, not a stale cached render (seen 2026-09-23: first fetch showed the
+# pre-refresh page, cache-busted fetch showed the new one).
+_NO_CACHE_HEADERS = {"User-Agent": _UA, "Cache-Control": "no-cache", "Pragma": "no-cache"}
 
 
 def _fetch_urllib(url: str, timeout: int) -> str:
-    req = Request(url, headers={"User-Agent": _UA})
+    req = Request(url, headers=_NO_CACHE_HEADERS)
     with urlopen(req, timeout=timeout) as resp:
         return resp.read().decode("utf-8", "replace")
 
@@ -27,7 +31,8 @@ def _fetch_curl(url: str, timeout: int) -> str:
     # curl has proven far more reliable than urllib through this egress path
     # (urllib hits IncompleteRead/RemoteDisconnected on endpoints curl reads clean).
     out = subprocess.run(
-        ["curl", "-sSL", "--max-time", str(timeout), "-A", _UA, url],
+        ["curl", "-sSL", "--max-time", str(timeout), "-A", _UA,
+         "-H", "Cache-Control: no-cache", "-H", "Pragma: no-cache", url],
         capture_output=True,
         timeout=timeout + 10,
     )
