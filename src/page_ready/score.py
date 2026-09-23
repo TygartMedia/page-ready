@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -11,11 +13,40 @@ from urllib.request import Request, urlopen
 from page_ready.aeo import evaluate_technical_health
 from page_ready._dom_legacy import score_html, score_url
 
+_UA = "PageReady/0.1 (+https://tygartmedia.com)"
+_FETCH_RETRIES = 3
 
-def _fetch(url: str, timeout: int = 30) -> str:
-    req = Request(url, headers={"User-Agent": "PageReady/0.1 (+https://tygartmedia.com)"})
+
+def _fetch_urllib(url: str, timeout: int) -> str:
+    req = Request(url, headers={"User-Agent": _UA})
     with urlopen(req, timeout=timeout) as resp:
         return resp.read().decode("utf-8", "replace")
+
+
+def _fetch_curl(url: str, timeout: int) -> str:
+    # curl has proven far more reliable than urllib through this egress path
+    # (urllib hits IncompleteRead/RemoteDisconnected on endpoints curl reads clean).
+    out = subprocess.run(
+        ["curl", "-sSL", "--max-time", str(timeout), "-A", _UA, url],
+        capture_output=True,
+        timeout=timeout + 10,
+    )
+    out.check_returncode()
+    return out.stdout.decode("utf-8", "replace")
+
+
+def _fetch(url: str, timeout: int = 30) -> str:
+    last: Exception | None = None
+    for attempt in range(_FETCH_RETRIES):
+        try:
+            return _fetch_urllib(url, timeout)
+        except Exception as exc:  # IncompleteRead, RemoteDisconnected, timeouts
+            last = exc
+            time.sleep(2**attempt)
+    try:
+        return _fetch_curl(url, timeout)
+    except Exception as exc:
+        raise RuntimeError(f"fetch failed for {url}: urllib gave {last!r}, curl gave {exc!r}") from exc
 
 
 def combine(aeo: dict[str, Any], dom: dict[str, Any], url: str) -> dict[str, Any]:
